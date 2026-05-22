@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force step-cli .
+mise cache clear
+mise install step-cli@0.30.2
+
+# Capture and display the output while also verifying it
+output=$(mise exec "step-cli@0.30.2" -- "step" version)
+echo "step output: ${output}"
+
+if echo "${output}" | grep -q '0.30.2'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version step-cli@0.30.2"
+  exit 1
+fi
